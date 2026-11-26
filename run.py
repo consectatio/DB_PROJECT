@@ -15,29 +15,31 @@ def search_input():
         # print(search.search(user_input)
 
 def check_out_input():
-    print("Provide either an ISBN number or Borrower ID")
-    print("1. ISBN Number")
-    print("2. Borrower ID")
-    print("Enter -1 to go back")
-    user_input = input("Search: ")
-    if user_input == "-1": return
-    elif user_input == "1": manage_books.checkout("ISBN Number")
-    elif user_input == "2": manage_books.checkout("Borrower ID")
-    else: print("Invalid input")
+    while True:
+        print("Provide either an ISBN number or Borrower ID")
+        print("1. ISBN Number")
+        print("2. Borrower ID")
+        print("Enter -1 to go back")
+        user_input = input("Search: ")
+        if user_input == "-1": return
+        elif user_input == "1": manage_books.checkout("ISBN Number")
+        elif user_input == "2": manage_books.checkout("Borrower ID")
+        else: print("Invalid input")
 
 def check_in_input():
-    print("Enter -1 to go back")
-    print("Can search using ISBN, Card #, or borrower name")
-    print("1. ISBN Number")
-    print("2. Card #")
-    print("3. Borrower Name") # saved in DB as fname_lname will need to split("_") when using
-    print("Enter -1 to go back")
-    user_input = input("Search: ")
-    if user_input == "-1": return
-    elif user_input == "1": manage_books.checkin("ISBN Number")
-    elif user_input == "2": manage_books.checkin("Card #")
-    elif user_input == "3": manage_books.checkin("Borrower Name")
-    else: print("Invalid input")
+    while True:
+        print("Enter -1 to go back")
+        print("Can search using ISBN, Card #, or borrower name")
+        print("1. ISBN Number")
+        print("2. Card #")
+        print("3. Borrower Name") # saved in DB as fname_lname will need to split("_") when using
+        print("Enter -1 to go back")
+        user_input = input("Search: ")
+        if user_input == "-1": return
+        elif user_input == "1": manage_books.checkin("ISBN Number")
+        elif user_input == "2": manage_books.checkin("Card #")
+        elif user_input == "3": manage_books.checkin("Borrower Name")
+        else: print("Invalid input")
 
 if __name__ == '__main__':
     while True:
