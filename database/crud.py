@@ -15,11 +15,36 @@ except:
     session.rollback()
     print("something went wrong")
 """
-from sqlalchemy import select, func
-from database.tables import Borrower
+from sqlalchemy import select, func, or_
+from sqlalchemy.orm import selectinload
+from database.tables import Borrower, Authors, Book, Book_loans
 
 def search_books(session, text):
-    pass
+    terms = text.split()
+    if not terms:
+        return []
+
+    session.connection().connection.driver_connection.create_function(
+        "casefold", 1, str.casefold, deterministic=True
+    )
+    active_loan = Book.loans.any(Book_loans.date_in.is_(None))
+    query = select(Book, active_loan).options(selectinload(Book.authors))
+
+    exact_isbn = session.execute(
+        query.where(func.casefold(Book.isbn) == text.strip().casefold())
+        .order_by(Book.isbn).limit(1)
+    ).all()
+    if exact_isbn:
+        return exact_isbn
+
+    for term in terms:
+        term = term.casefold()
+        query = query.where(or_(
+            func.instr(func.casefold(Book.isbn), term) > 0,
+            func.instr(func.casefold(Book.title), term) > 0,
+            Book.authors.any(func.instr(func.casefold(Authors.Name), term) > 0),
+        ))
+    return session.execute(query.order_by(Book.title, Book.isbn)).all()
 
 def checkout_book(session, isbn, card_id):
     pass

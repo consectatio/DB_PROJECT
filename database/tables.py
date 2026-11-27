@@ -65,7 +65,7 @@ class Authors(Base):
 class Book_authors(Base):
     __tablename__ = 'book_authors'
     author_id: Mapped[int] = mapped_column(ForeignKey("authors.author_id"), primary_key=True)
-    isbn: Mapped[str] = mapped_column(ForeignKey("books.isbn"), primary_key=True)
+    isbn: Mapped[str] = mapped_column(ForeignKey("books.isbn"), primary_key=True, index=True)
 
 
 class Borrower(Base):

@@ -6,16 +6,19 @@ from database.tables import SessionLocal
 import os
 
 def search_input(session):
-    while True:
+ while True:
         print("Enter -1 to go back")
-        print("Can search using ISBN, book title, author, or availability")
+        print("Search by ISBN, book title, or author")
         user_input = input("Search: ")
         if user_input == "-1": return
 
-        # create & call function in search.py
-        # single text search do like some kind of matching in the following columns
-        # ISBN, Book Title, author, and availability
-        # print(search.search(session, user_input)
+        results = search.search(session, user_input)
+        if not results:
+            print("No books found.")
+            continue
+        print("ISBN | TITLE | AUTHORS | STATUS")
+        for isbn, title, authors, status in results:
+            print(f"{isbn} | {title} | {authors} | {status}")
 
 def check_out_input(session):
     while True:
