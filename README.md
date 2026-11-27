@@ -1,6 +1,6 @@
 # HOW TO SET UP
 1. HAVE ANY VERSION OF PYTHON (PROBABLY ANY VERSION)
-2. in your cmd type `git clone (whatever i call the repo -> it's url)` will clone the code to whatever directory you are in.
+2. in your cmd type `git clone https://github.com/consectatio/DB_PROJECT` will clone the code to whatever directory you are in.
 3. create `py -m venv .venv` (your ide may already do it automatically)
 3. type `pip install requirements.txt`
 4. okay you have working code now, for milestone 2 run the run.py: I left stubs for you guys to fill in.
