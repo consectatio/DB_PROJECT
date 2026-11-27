@@ -3,38 +3,56 @@ from database import crud
 
 def create_borrower(session):
     print("\n--- Create Borrower Account ---")
+    print("Enter -1 to go back")
 
-    # Collect the borrower's information.
-    fname = input("First name: ").strip()
-    lname = input("Last name: ").strip()
-    ssn = input("SSN: ").strip().replace("-", "")
-    address = input("Street address: ").strip()
-    city = input("City: ").strip()
-    state = input("State: ").strip()
-    phone = input("Phone number (optional): ").strip()
+    # can only be letters
+    while True:
+        fname = input("First name: ").strip()
+        if fname == "-1": return
+        if fname.isalpha(): break
+        print("Error: First name must contain letters only.")
 
-    # Verify that all required fields are provided.
-    if not all([fname, lname, ssn, address, city, state]):
-        print("Error: All required fields must be completed.")
-        return
+    # can only be letters, and the combined name must fit the database column
+    while True:
+        lname = input("Last name: ").strip()
+        if lname == "-1": return
+        if not lname.isalpha(): print("Error: Last name must contain letters only.")
+        elif len(f"{fname}_{lname}") > 60: print("Error: Borrower name is too long.")
+        else: break
 
-    # Verify that the SSN contains exactly nine digits.
-    if len(ssn) != 9 or not ssn.isascii() or not ssn.isdigit():
+    # exactly nine digits, dashes are stripped
+    while True:
+        ssn = input("SSN: ").strip()
+        if ssn == "-1": return
+        ssn = ssn.replace("-", "")
+        if len(ssn) == 9 and ssn.isascii() and ssn.isdigit(): break
         print("Error: SSN must contain exactly 9 digits.")
-        return
 
-    # Verify that inputs fit the database column lengths.
-    if len(f"{fname}_{lname}") > 60:
-        print("Error: Borrower name is too long.")
-        return
+    while True:
+        address = input("Street address: ").strip()
+        if address == "-1": return
+        if address: break
+        print("Error: Street address is required.")
 
-    if len(f"{address}, {city}, {state}") > 100:
-        print("Error: Address is too long.")
-        return
+    while True:
+        city = input("City: ").strip()
+        if city == "-1": return
+        if city.isalpha(): break
+        print("Error: City must contain letters only.")
 
-    if len(phone) > 16:
-        print("Error: Phone number is too long.")
-        return
+    while True:
+        state = input("State: ").strip()
+        if state == "-1": return
+        if not state.isalpha(): print("Error: State must contain letters only.")
+        elif len(f"{address}, {city}, {state}") > 100: print("Error: Address is too long.")
+        else: break
+
+    while True:
+        phone = input("Phone number (optional): ").strip()
+        if phone == "-1": return
+        if not phone: break
+        if phone.isascii() and phone.isdigit() and len(phone) <= 16: break
+        print("Error: Phone number must contain numbers only.")
 
     # Attempt to create the borrower through the CRUD function.
     try:
