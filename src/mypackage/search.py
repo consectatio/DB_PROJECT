@@ -1,2 +1,2 @@
-def search():
+def search(session, text):
     pass

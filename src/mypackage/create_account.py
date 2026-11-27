@@ -1,4 +1,4 @@
-def create_borrower():
+def create_borrower(session):
     """
     have inputs and prints for:
         - fname (when inserting bname = fname_lname)

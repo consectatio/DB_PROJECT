@@ -18,5 +18,7 @@
 
 - Write the logic for these functions in their respective file: `src/mypackage/{function}.py`
 - Any required database commands should be in `database/crud.py`
+- Also reuse the database session that is passed in and to wrap database writes in a try loop with the main success route
+being `session.commit()` and the except side having `session.rollback()`.
 - Hook them in to their respective places (call them) in the `run.py`. When running run.py should work.
 - Update and remove the respective *what needs to be done* bullet points when done.
