@@ -3,8 +3,7 @@
 2. in your cmd type `git clone (whatever i call the repo -> it's url)` will clone the code to whatever directory you are in.
 3. create `py -m venv .venv` (your ide may already do it automatically)
 3. type `pip install requirements.txt`
-4. run the `src/mypackage/csv_to_sql.py` to get the database file generated in the database directory
-5. okay you have working code now, for milestone 2 run the run.py: I left stubs for you guys to fill in.
+4. okay you have working code now, for milestone 2 run the run.py: I left stubs for you guys to fill in.
     - PLEASE, you will have to make database CRUD update insert query whatever commands, put them and call them from the crud.py file, but put the logic code for the three functions in side the `src/mypackage/{function_whatever}.py` file.
 
 # WHAT IS DONE

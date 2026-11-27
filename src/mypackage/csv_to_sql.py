@@ -10,7 +10,7 @@ CSV_DIR = ROOT / "database"
 sys.path.insert(0, str(ROOT))
 
 
-def main() -> None:
+def createDatabase() -> None:
     init_db()
 
     with SessionLocal() as session:
@@ -39,7 +39,3 @@ def main() -> None:
             df.to_sql(table, conn, if_exists="append", index=False)
 
     print(f"imported into {engine.url.database}")
-
-
-if __name__ == "__main__":
-    main()

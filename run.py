@@ -1,6 +1,8 @@
 from src.mypackage import manage_books
 from src.mypackage import create_account
 from src.mypackage import search
+from src.mypackage import csv_to_sql
+import os
 
 def search_input():
     while True:
@@ -42,6 +44,9 @@ def check_in_input():
         else: print("Invalid input")
 
 if __name__ == '__main__':
+    if not os.path.exists(os.path.join("database", "database.db")):
+        csv_to_sql.createDatabase()
+
     while True:
         print("1. Search for a book")
         print("2. Check out a book")
