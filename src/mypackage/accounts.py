@@ -25,8 +25,9 @@ def create_borrower(session):
         ssn = input("SSN: ").strip()
         if ssn == "-1": return
         ssn = ssn.replace("-", "")
-        if len(ssn) == 9 and ssn.isascii() and ssn.isdigit(): break
-        print("Error: SSN must contain exactly 9 digits.")
+        if not (len(ssn) == 9 and ssn.isascii() and ssn.isdigit()): print("Error: SSN must contain exactly 9 digits.")
+        elif crud.ssn_exists(session, ssn): print("Error: A borrower with this SSN already exists.")
+        else: break
 
     while True:
         address = input("Street address: ").strip()

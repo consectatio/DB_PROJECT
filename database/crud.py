@@ -52,17 +52,12 @@ def checkout_book(session, isbn, card_id):
 def checkin_book(session, loan_id):
     pass
 
+def ssn_exists(session, ssn):
+    return session.scalar(select(Borrower.card_id).where(Borrower.ssn == ssn)) is not None
+
 def create_borrower(session, fname, lname, ssn,
                     address, city, state, phone=None):
     try:
-        # Check if a borrower with this SSN already exists.
-        existing = session.scalar(
-            select(Borrower.card_id).where(Borrower.ssn == ssn)
-        )
-
-        if existing is not None:
-            raise ValueError("A borrower with this SSN already exists.")
-
         # Retrieve the highest existing card ID.
         last_id = session.scalar(
             select(func.max(Borrower.card_id))
