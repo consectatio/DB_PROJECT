@@ -76,3 +76,13 @@ def create_borrower(session):
 
     except Exception:
         print("Error: Unable to create borrower account.")
+
+
+# will need to show every borrower grouped by card_id with the amounts summed
+# ^ probably just a public api to call the TODO crud function.
+def display_fines(session):
+    pass
+
+
+def pay_fines(session):
+    pass
