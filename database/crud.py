@@ -46,6 +46,7 @@ def search_books(session, text):
             Book.authors.any(func.instr(func.casefold(Authors.Name), term) > 0),
         ))
     return session.execute(query.order_by(Book.title, Book.isbn)).all()
+
 def checkout_book(session, isbn, card_id):
     pass
 
