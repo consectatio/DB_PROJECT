@@ -1,6 +1,6 @@
 # HOW TO SET UP
 1. HAVE ANY VERSION OF PYTHON (PROBABLY ANY VERSION)
-2. in your cmd type `git clone (whatever i call the repo -> it's url)` will clone the code to whatever directory you are in.
+2. in your cmd type `git clone https://github.com/consectatio/DB_PROJECT` will clone the code to whatever directory you are in.
 3. create `py -m venv .venv` (your ide may already do it automatically)
 3. type `pip install requirements.txt` (make sure you're in your venv / your venv is activated)
 4. run the `src/mypackage/csv_to_sql.py` to get the database file generated in the database directory
