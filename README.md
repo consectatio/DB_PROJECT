@@ -9,12 +9,17 @@
 # WHAT IS DONE
 1. I have made the .db file (so the database and it's tables are made)
    - it is okay if you have broken the file just rerun the `csv_to_sql.py` file to get a brand new copy.
+2. Borrower account creation is implemented.
+   - Validates required borrower information.
+   - Automatically generates unique library card IDs.
+   - Prevents duplicate SSNs.
+   - Supports database commit and rollback.
+   - Integrated into run.py through menu option 4.
 
 # WHAT NEEDS TO BE DONE
 1. Create the `search` function -> `search.py`
 2. Create the `checkout` function -> `manage_books.py`
 3. Create the `checkin` function -> `manage_books.py`
-4. Create the `create_borrowers` function -> `create_account.py`
 
 - Write the logic for these functions in their respective file: `src/mypackage/{function}.py`
 - Any required database commands should be in `database/crud.py`
