@@ -44,20 +44,47 @@ def check_out_input(session):
         ok, message = manage_books.checkout(session, isbn, card_id)
         print(message)
 
+# def check_in_input(session):
+#     while True:
+#         print("Enter -1 to go back")
+#         print("Can search using ISBN, Card #, or borrower name")
+#         print("1. ISBN Number")
+#         print("2. Card #")
+#         print("3. Borrower Name") # saved in DB as fname_lname will need to split("_") when using
+#         print("Enter -1 to go back")
+#         user_input = input("Search: ")
+#         if user_input == "-1": return
+#         elif user_input == "1": manage_books.checkin(session, "ISBN Number")
+#         elif user_input == "2": manage_books.checkin(session, "Card #")
+#         elif user_input == "3": manage_books.checkin(session, "Borrower Name")
+#         else: print("Invalid input")
+
 def check_in_input(session):
     while True:
         print("Enter -1 to go back")
-        print("Can search using ISBN, Card #, or borrower name")
-        print("1. ISBN Number")
-        print("2. Card #")
-        print("3. Borrower Name") # saved in DB as fname_lname will need to split("_") when using
-        print("Enter -1 to go back")
-        user_input = input("Search: ")
-        if user_input == "-1": return
-        elif user_input == "1": manage_books.checkin(session, "ISBN Number")
-        elif user_input == "2": manage_books.checkin(session, "Card #")
-        elif user_input == "3": manage_books.checkin(session, "Borrower Name")
-        else: print("Invalid input")
+        print("Search by ISBN, card ID, or borrower name")
+        text = input("Search: ").strip()
+        if text == "-1": return
+
+        loans = manage_books.find_loans(session, text)
+        if not loans:
+            print("No checked-out books match that search.")
+            continue
+
+        print("NO | ISBN | TITLE | CARD ID | BORROWER | DUE")
+        for n, loan in enumerate(loans, 1):
+            print(f"{n} | {loan.isbn} | {loan.title} | {loan.card_id} | "
+                  f"{loan.Bname.replace('_', ' ')} | {loan.due_date:%Y-%m-%d}")
+
+        choice = input("Pick up to 3 numbers to check in (eg. 1 3), or -1 to search again: ").strip()
+        if choice == "-1":
+            continue
+        ok, result = manage_books.parse_selection(choice, len(loans))
+        if not ok:
+            print(result)
+            continue
+        ok, message = manage_books.checkin(session, [loans[i].loan_id for i in result])
+        print(message)
 
 def fines_input(session):
     while True:
