@@ -30,10 +30,6 @@ def book_exists(session, isbn):
 def borrower_exists(session, card_id):
     return session.get(Borrower, card_id) is not None
 
-
-
-
-
 def search_books(session, text):
     terms = text.split()
     if not terms:
@@ -61,8 +57,43 @@ def search_books(session, text):
         ))
     return session.execute(query.order_by(Book.title, Book.isbn)).all()
 
-# def checkout_book(session, isbn, card_id):
-#     pass
+def checkout_book(session, isbn, card_id):
+    try:
+        today = date.today()
+        loan = Book_loans(isbn=isbn, card_id=card_id,
+                          date_out=today,
+                          due_date=today + timedelta(days=LOAN_DAYS))
+        session.add(loan)
+        session.commit()
+        return loan
+    except:
+        session.rollback()
+        print("error during checkout DB operation")
+        raise
+
+def checked_out(session, isbn):
+    return session.scalar(
+        select(Book_loans.loan_id)
+        .where(Book_loans.isbn == isbn, Book_loans.date_in.is_(None))
+        .limit(1)
+    ) is not None
+
+def loan_count(session, card_id):
+    return session.scalar(
+        select(func.count())
+        .select_from(Book_loans)
+        .where(Book_loans.card_id == card_id, Book_loans.date_in.is_(None))
+    )
+
+def has_fines(session, card_id):
+    return session.scalar(
+        select(Fines.loan_id)
+        .join(Fines.loan)
+        .where(Book_loans.card_id == card_id,
+               Fines.paid.is_(False),
+               Fines.Fine_amt > 0)
+        .limit(1)
+    ) is not None
 
 def checkin_book(session, loan_id):
     pass
@@ -138,44 +169,3 @@ def create_borrower(session, fname, lname, ssn,
     except Exception:
         session.rollback()
         raise
-
-
-# Loan Helpers
-
-def checkout_book(session, isbn, card_id):
-    try:
-        today = date.today()
-        loan = Book_loans(isbn=isbn, card_id=card_id,
-                          date_out=today,
-                          due_date=today + timedelta(days=LOAN_DAYS))
-        session.add(loan)
-        session.commit()
-        return loan
-    except:
-        session.rollback()
-        print("error during checkout DB operation")
-        raise
-
-def checked_out(session, isbn):
-    return session.scalar(
-        select(Book_loans.loan_id)
-        .where(Book_loans.isbn == isbn, Book_loans.date_in.is_(None))
-        .limit(1)
-    ) is not None
-
-def loan_count(session, card_id):
-    return session.scalar(
-        select(func.count())
-        .select_from(Book_loans)
-        .where(Book_loans.card_id == card_id, Book_loans.date_in.is_(None))
-    )
-
-def has_fines(session, card_id):
-    return session.scalar(
-        select(Fines.loan_id)
-        .join(Fines.loan)
-        .where(Book_loans.card_id == card_id,
-               Fines.paid.is_(False),
-               Fines.Fine_amt > 0)
-        .limit(1)
-    ) is not None

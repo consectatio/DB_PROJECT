@@ -20,18 +20,6 @@ def search_input(session):
         for isbn, title, authors, status in results:
             print(f"{isbn} | {title} | {authors} | {status}")
 
-# def check_out_input(session):
-#     while True:
-#         print("Provide either an ISBN number or Borrower ID")
-#         print("1. ISBN Number")
-#         print("2. Borrower ID")
-#         print("Enter -1 to go back")
-#         user_input = input("Search: ")
-#         if user_input == "-1": return
-#         elif user_input == "1": manage_books.checkout(session, "ISBN Number")
-#         elif user_input == "2": manage_books.checkout(session, "Borrower ID")
-#         else: print("Invalid input")
-
 def check_out_input(session):
     while True:
         print("Enter -1 to go back")
