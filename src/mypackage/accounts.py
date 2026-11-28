@@ -1,4 +1,6 @@
+import pandas as pd
 from database import crud
+from database.crud import query_fines
 
 
 def create_borrower(session):
@@ -85,8 +87,25 @@ def create_borrower(session):
 # will need to show every borrower grouped by card_id with the amounts summed
 # ^ probably just a public api to call the TODO crud function.
 def display_fines(session):
-    pass
-
+    #print("\nEnter -1 to return to the main menu")
+    user_input = input("Enter borrower card ID (optional): ").strip()
+    if user_input == "-1": return
+    fines = crud.query_fines(session, user_input)
+    if not fines:
+        print("No fines found.")
+        return
+    print(pd.DataFrame(fines, columns=["Card ID", "Total Fine"]).to_string(index=False))
 
 def pay_fines(session):
-    pass
+    while True:
+        user_input = input("Enter pay card ID: ").strip()
+        if user_input == "-1": return
+        if not crud.query_fines(session, user_input):
+            print("Error: No unpaid fines found for that card ID.")
+            continue
+        paid = crud.pay_fines(session, user_input)
+        if paid == 0:
+            print("Error: Fines can only be paid once the book has been returned.")
+            continue
+        print(f"Paid ${paid} in fines for {user_input}.")
+        return

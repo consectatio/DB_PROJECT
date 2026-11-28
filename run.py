@@ -2,7 +2,7 @@ from src.mypackage import manage_books
 from src.mypackage import accounts
 from src.mypackage import search
 from src.mypackage import csv_to_sql
-from database.tables import SessionLocal
+from database.tables import SessionLocal, refresh_fines
 import os
 
 def search_input(session):
@@ -63,6 +63,7 @@ if __name__ == '__main__':
         csv_to_sql.createDatabase()
 
     session = SessionLocal()
+    refresh_fines(session)
 
     while True:
         print("Enter -1 to exit")

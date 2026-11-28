@@ -17,7 +17,7 @@ except:
 """
 from sqlalchemy import select, func, or_
 from sqlalchemy.orm import selectinload
-from database.tables import Borrower, Authors, Book, Book_loans
+from database.tables import Borrower, Authors, Book, Book_loans, Fines
 
 def search_books(session, text):
     terms = text.split()
@@ -51,6 +51,32 @@ def checkout_book(session, isbn, card_id):
 
 def checkin_book(session, loan_id):
     pass
+
+def query_fines(session, card_id=None):
+    query = (select(Book_loans.card_id, func.sum(Fines.Fine_amt))
+             .join(Fines, Fines.loan_id == Book_loans.loan_id)
+             .where(Fines.paid.is_(False))
+             .group_by(Book_loans.card_id)
+             .order_by(Book_loans.card_id))
+    if card_id:
+        query = query.where(Book_loans.card_id == card_id)
+    return session.execute(query).all()
+
+def pay_fines(session, card_id):
+    try:
+        fines = session.scalars(
+            select(Fines).join(Book_loans, Fines.loan_id == Book_loans.loan_id)
+            .where(Book_loans.card_id == card_id,
+                   Fines.paid.is_(False),
+                   Book_loans.date_in.is_not(None))
+        ).all()
+        for fine in fines:
+            fine.paid = True
+        session.commit()
+        return sum(fine.Fine_amt for fine in fines)
+    except Exception:
+        session.rollback()
+        raise
 
 def ssn_exists(session, ssn):
     return session.scalar(select(Borrower.card_id).where(Borrower.ssn == ssn)) is not None
