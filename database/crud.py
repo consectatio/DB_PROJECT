@@ -95,8 +95,38 @@ def has_fines(session, card_id):
         .limit(1)
     ) is not None
 
-def checkin_book(session, loan_id):
-    pass
+def checkin_books(session, loan_ids):
+    try:
+        loans = session.scalars(
+            select(Book_loans)
+            .where(Book_loans.loan_id.in_(loan_ids),
+                   Book_loans.date_in.is_(None))
+        ).all()
+        for loan in loans:
+            loan.date_in = date.today()
+        session.commit()
+        return loans
+    except Exception:
+        session.rollback()
+        print("error during checkin DB operation")
+        raise
+
+def get_open_loans(session, text):
+    text = text.strip()
+    if not text:
+        return []
+    name = text.replace(" ", "_")
+    return session.execute(
+        select(Book_loans.loan_id, Book_loans.isbn, Book.title,
+               Book_loans.card_id, Borrower.Bname, Book_loans.due_date)
+        .join(Book, Book.isbn == Book_loans.isbn)
+        .join(Borrower, Borrower.card_id == Book_loans.card_id)
+        .where(Book_loans.date_in.is_(None),
+               or_(Book_loans.isbn == text,
+                   Book_loans.card_id == text.upper(),
+                   Borrower.Bname.ilike(f"%{name}%")))
+        .order_by(Book_loans.card_id, Book_loans.due_date)
+    ).all()
 
 def query_fines(session, card_id=None):
     query = (select(Book_loans.card_id, func.sum(Fines.Fine_amt))
